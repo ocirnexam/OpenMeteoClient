@@ -31,7 +31,7 @@ fun DailyWeatherDisplay(
 ) {
     val formattedTime = remember(weatherDayData.day) {
         weatherDayData.day.format(
-            DateTimeFormatter.ofPattern("EE, dd.MM")
+            DateTimeFormatter.ofPattern("EE dd.MM")
         )
     }
     Column(

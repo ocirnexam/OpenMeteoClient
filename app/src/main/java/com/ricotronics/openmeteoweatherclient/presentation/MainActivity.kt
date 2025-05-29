@@ -2,6 +2,8 @@ package com.ricotronics.openmeteoweatherclient.presentation
 
 
 import android.Manifest
+import android.location.Address
+import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -29,6 +31,7 @@ import com.ricotronics.openmeteoweatherclient.presentation.ui.theme.DeepBlue
 import com.ricotronics.openmeteoweatherclient.presentation.ui.theme.WeatherAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.ricotronics.openmeteoweatherclient.R
+import java.util.Locale
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -52,6 +55,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             var background = R.drawable.sunny_sky
             viewModel.state.weatherInfo?.currentWeatherData?.weatherType?.let { background = it.backgroundRes }
+            val addresses: List<Address>
+            var city: String = ""
+            val geocoder = Geocoder(this, Locale.getDefault())
+            viewModel.latitude?.let {
+                addresses = geocoder.getFromLocation(
+                    viewModel.latitude!!,
+                    viewModel.longitude!!,
+                    1
+                )!!
+                city = addresses[0].locality
+            }
+
+
             WeatherAppTheme {
                 Box(
                     modifier = Modifier.fillMaxSize()
@@ -68,6 +84,7 @@ class MainActivity : ComponentActivity() {
                         item {
                             WeatherCard(
                                 state = viewModel.state,
+                                city = city,
                                 backgroundColor = DeepBlue
                             )
                         }

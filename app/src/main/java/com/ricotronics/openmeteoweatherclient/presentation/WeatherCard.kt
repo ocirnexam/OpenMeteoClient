@@ -28,6 +28,7 @@ import kotlin.math.roundToInt
 @Composable
 fun WeatherCard(
     state: WeatherState,
+    city: String,
     backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
@@ -44,7 +45,7 @@ fun WeatherCard(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Today ${
+                    text = "$city, Today ${
                         data.time.format(
                             DateTimeFormatter.ofPattern("HH:mm")
                         )

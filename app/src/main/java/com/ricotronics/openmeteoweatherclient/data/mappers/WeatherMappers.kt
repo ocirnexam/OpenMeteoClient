@@ -67,17 +67,15 @@ private fun toWeatherDataWeekMap(weatherDataMap: Map<Int, List<WeatherData>>): L
     val dataList: MutableList<WeatherDayData> = mutableListOf()
     weatherDataMap.values.forEach { data ->
         val date = data.get(0).time
-        var lowestTemp = Double.MAX_VALUE
-        var highestTemp = Double.MIN_VALUE
-        val iconRes = data.get(0).weatherType.iconRes
-        data.forEach {
-            if (it.temperatureCelsius < lowestTemp) {
-                lowestTemp = it.temperatureCelsius
-            }
-            if (it.temperatureCelsius > highestTemp) {
-                highestTemp = it.temperatureCelsius
-            }
-        }
+
+        // get the weather type that appears the most
+        val histWeatherData = data.groupingBy { it.weatherType.weatherDesc }.eachCount().maxByOrNull{ it.value }
+        val iconRes = data.find { it.weatherType.weatherDesc == histWeatherData!!.key }!!.weatherType.iconRes
+
+        // get highest and lowest temp of the day
+        val highestTemp = data.maxByOrNull { it.temperatureCelsius }!!.temperatureCelsius
+        val lowestTemp = data.minByOrNull { it.temperatureCelsius }!!.temperatureCelsius
+
         dataList.add(WeatherDayData(date, lowestTemp, highestTemp, iconRes))
     }
     return dataList

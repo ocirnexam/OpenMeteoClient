@@ -1,6 +1,8 @@
 package com.ricotronics.openmeteoweatherclient.presentation
 
 
+import android.location.Address
+import android.location.Geocoder
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,7 +13,9 @@ import com.ricotronics.openmeteoweatherclient.domain.repository.WeatherRepositor
 import com.ricotronics.openmeteoweatherclient.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
+
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
@@ -20,6 +24,11 @@ class WeatherViewModel @Inject constructor(
 ): ViewModel() {
 
     var state by mutableStateOf(WeatherState())
+        private set
+
+    var latitude: Double? = null
+        private set
+    var longitude: Double? = null
         private set
 
     fun loadWeatherInfo() {
@@ -45,6 +54,8 @@ class WeatherViewModel @Inject constructor(
                         )
                     }
                 }
+                latitude = location.latitude
+                longitude = location.longitude
             } ?: kotlin.run {
                 state = state.copy(
                     weatherInfo = null,
